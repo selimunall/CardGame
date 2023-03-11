@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="output.css">
     <title>Cards Game</title>
 </head>
-<body class="justify-center flex">
+<body class="justify-center flex box-border">
     <div class="container">
         <header class="my-3 border-2 flex justify-center border-black text-center rounded-lg ">
             <img class="my-2 h-8" src="img/fight.png">
@@ -23,7 +23,18 @@
         </nav>
         <main class="flex my-3">
             <section class="basis-2/3 border-2 mr-1 border-black rounded-lg"> 
-                 
+                 <ul id="cards">
+                    <li id="card" class="p-3 w-40 relative text-center">
+                        <input type="checkbox" id="1" class="absolute left-3">
+                        <label  for="1">
+                            <div class="mt-3">
+                                <h3 id="name">Muhammed</h3>
+                                <p id="brain">Brain : 33</p>
+                                <p id="power">Power : 44</p>
+                            </div>
+                        </label>
+                    </li>
+                 </ul>
             </section>
             
             <aside class="basis-1/3 border-2 border-black rounded-lg">
@@ -31,19 +42,76 @@
                     <h2>Add Player</h2>
                 </header>
                 <form class="m-3 flex">
-                    <ul class="flex-grow-[3]">
-                        <li class="mb-1"><label for="name">Name :</label><input type="text" class="border-black border-2 ml-1 rounded-md"></li>
-                        <li class="mb-1"><label for="name">Name :</label><input type="text" class="border-black border-2 ml-1 rounded-md"></li>
-                        <li class="mb-1"><label for="name">Name :</label><input type="text" class="border-black border-2 ml-1 rounded-md"></li>
+                    <ul class="flex-grow-[3] flex">
+                        
+                        <ul id="texts">
+                            <li class="mb-2"><label for="nameInput">Name :</label></li>
+                            <li class="mb-2"><label for="brainInput">Brain :</label></li>
+                            <li class="mb-1"><label for="powerInput">Power :</label></li>
+                        </ul>
+                        <ul id="inputs">
+                            <li class="mb-1"><input type="text" id="nameInput" class="border-black border-2 ml-1 rounded-md"></li>
+                            <li class="mb-1"><input type="text" id="brainInput" class="border-black border-2 ml-1 rounded-md"></li>
+                            <li class="mb-1"><input type="text" id="powerInput" class="border-black border-2 ml-1 rounded-md"></li>
+                        </ul>
                     </ul>
                     <ul class="flex-grow-[1]">
-                        <li class="flex justify-center "><button class="rounded-full border-black border-2 px-2" type="button">Add Player</button></li>
+                        <li class="flex justify-center "><button onclick="characterAdd()" class="rounded-full border-black border-2 px-2" type="button">Add Player</button></li>
                         <li class="flex justify-center mt-3"><input type="file" id="files" class="hidden"/><label class="rounded-full hover:cursor-pointer border-black border-2 px-2" for="files">Select Character</label></li>
                     </ul>
                 </form>
             </aside>
  
         </main>
+
+        <script>
+            const cname = document.getElementById("nameInput");
+            const brain = document.getElementById("brainInput");
+            const power = document.getElementById("powerInput");
+            const cards = document.querySelector("#cards");
+
+
+            let characterList = [
+                {"nameList" : "Selim" , "brainList" : 33 , "powerList" : 33}
+            ];
+            listItems();
+
+            function listItems () {
+                for (let character of characterList) {
+                    let a = `
+                    <li id="card" class="p-3 w-40 relative text-center">
+                        <input type="checkbox" id="1" class="absolute left-3">
+                        <label  for="1">
+                            <div class="mt-3">
+                                <h3 id="name">${character.nameList}</h3>
+                                <p id="brain">Brain : ${character.brainList}</p>
+                                <p id="power">Power : ${character.powerList}</p>
+                            </div>
+                        </label>
+                    </li>`
+                    cards.innerHTML(a);
+                }
+            }
+
+            //we use the function for add to Array List and we call Character List again.
+            function characterAdd() {
+                if (
+                    cname.value == "" ||
+                    brain.value == "" ||
+                    power.value == "" ) {
+
+                        alert("Please input value!");
+                } else {
+                    characterList.push(cname.value,brain.value,power.value);
+                    listItems();
+                }
+            
+            
+            }
+
+
+
+        </script>
         
     </div>
 </body>
