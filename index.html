@@ -16,15 +16,17 @@
         </header>
         <nav>
             <ul class="flex text-xl ">
-                <li class="my-3 mr-3 hover:text-red-600"><button type="button">Edit</button></li>
-                <li class="m-3 hover:text-red-600"><button type="button">War</button></li>
-                <li class="m-3 hover:text-red-600"><button type="button">Delete</button></li>
+                <li class="my-3 mr-3 hover:text-red-600"><button onclick="edit()" type="button">Edit</button></li>
+                <li  class="my-3 hover:cursor-default">|</li>
+                <li class="m-3 hover:text-red-600"><button onclick="war()" type="button">War</button></li>
+                <li  class="my-3 hover:cursor-default">|</li>
+                <li class="m-3 hover:text-red-600"><button onclick="deleteItem()" type="button">Delete</button></li>
             </ul>
         </nav>
         <main class="flex my-3">
             <section class="basis-2/3 border-2 mr-1 border-black rounded-lg"> 
-                 <ul id="cards">
-                    <li id="card" class="p-3 w-40 relative text-center">
+                 <ul id="cards" class="flex flex-wrap">
+                    <li id="card" class="p-3 relative w-1/4 text-center">
                         <input type="checkbox" id="1" class="absolute left-3">
                         <label  for="1">
                             <div class="mt-3">
@@ -42,75 +44,143 @@
                     <h2>Add Player</h2>
                 </header>
                 <form class="m-3 flex">
-                    <ul class="flex-grow-[3] flex">
-                        
-                        <ul id="texts">
-                            <li class="mb-2"><label for="nameInput">Name :</label></li>
-                            <li class="mb-2"><label for="brainInput">Brain :</label></li>
-                            <li class="mb-1"><label for="powerInput">Power :</label></li>
-                        </ul>
-                        <ul id="inputs">
-                            <li class="mb-1"><input type="text" id="nameInput" class="border-black border-2 ml-1 rounded-md"></li>
-                            <li class="mb-1"><input type="text" id="brainInput" class="border-black border-2 ml-1 rounded-md"></li>
-                            <li class="mb-1"><input type="text" id="powerInput" class="border-black border-2 ml-1 rounded-md"></li>
-                        </ul>
+                    <ul class="flex-grow-[9] mr-1">
+                        <li class="mb-2 flex"><label class="w-2/5" for="nameInput">Name :</label><input type="text" id="nameInput" class="border-black  border-2 w-full ml-1  rounded-md"></li>
+                        <li class="mb-2 flex"><label class="w-2/5" for="brainInput">Brain :</label><input type="text" id="brainInput" class="border-black border-2 w-full ml-1 rounded-md"></li>
+                        <li class="mb-1 flex"><label class="w-2/5" for="powerInput">Power :</label><input type="text" id="powerInput" class="border-black border-2 w-full ml-1 rounded-md"></li>
                     </ul>
-                    <ul class="flex-grow-[1]">
-                        <li class="flex justify-center "><button onclick="characterAdd()" class="rounded-full border-black border-2 px-2" type="button">Add Player</button></li>
-                        <li class="flex justify-center mt-3"><input type="file" id="files" class="hidden"/><label class="rounded-full hover:cursor-pointer border-black border-2 px-2" for="files">Select Character</label></li>
+                    <div class="flex-grow-[3]"></div>
+                    <ul class="flex-grow-[3] my-auto">
+                        <li><button id="addPlayerbtn" onclick="characterAdd()" class="rounded-md bg-slate-900 text-white my-auto px-2 text-sm" type="button">Add Player</button></li>
                     </ul>
                 </form>
             </aside>
- 
+            
         </main>
 
         <script>
             const cname = document.getElementById("nameInput");
             const brain = document.getElementById("brainInput");
             const power = document.getElementById("powerInput");
-            const cards = document.querySelector("#cards");
-
+            const cards = document.getElementById("cards");
+            const addPlayerbtn = document.getElementById("addPlayerbtn");  
+            let editStatus = false ;
 
             let characterList = [
-                {"nameList" : "Selim" , "brainList" : 33 , "powerList" : 33}
+                {"nameList" : "Selim" , "brainList" : 33 , "powerList" : 33 , "check" : true},
+                {"nameList" : "Ali" , "brainList" : 44 , "powerList" : 55 , "check" : false},
+                {"nameList" : "Veli" , "brainList" : 44 , "powerList" : 55 ,  "check" : false},
             ];
             listItems();
 
+            //we use this function to check and print the list.
             function listItems () {
-                for (let character of characterList) {
-                    let a = `
-                    <li id="card" class="p-3 w-40 relative text-center">
-                        <input type="checkbox" id="1" class="absolute left-3">
-                        <label  for="1">
+                cards.innerHTML = "";
+                for (let character in characterList) {
+                    
+                    let li = `
+                    <li id="card" class="p-3 w-1/4 relative text-center">
+                        <input type="checkbox" id="${characterList[character].nameList}" onclick="checkboxes(this)" class="checkboxes absolute left-3" ${characterList[character].check == true ? "checked" : ""}>
+                        <label  for="${characterList[character].nameList}">
                             <div class="mt-3">
-                                <h3 id="name">${character.nameList}</h3>
-                                <p id="brain">Brain : ${character.brainList}</p>
-                                <p id="power">Power : ${character.powerList}</p>
+                                <h3 id="name">${characterList[character].nameList}</h3>
+                                <div id="brain" style="display:flex; justify-content:center;" ><p>Brain : </p><p>${characterList[character].brainList}</p></div>
+                                <div id="power" style="display:flex; justify-content:center;"><p>Power :</p><p>${characterList[character].powerList}</p></div>
                             </div>
                         </label>
                     </li>`
-                    cards.innerHTML(a);
+                    cards.insertAdjacentHTML("beforeend",li);
                 }
             }
 
-            //we use the function for add to Array List and we call Character List again.
+            //we use this function for add to Array List and we call Character List again and We're checking to see if it is the same character.
             function characterAdd() {
-                if (
-                    cname.value == "" ||
-                    brain.value == "" ||
-                    power.value == "" ) {
+                if (editStatus == true) {
+                    
 
-                        alert("Please input value!");
+
+                    addPlayerbtn.innerText = "Add Player";
+                    editStatus = false ;
+                    cname.value = "";
+                    brain.value = "";
+                    power.value = "";
                 } else {
-                    characterList.push(cname.value,brain.value,power.value);
-                    listItems();
+                    
+                    let i = 0;
+                    if (
+                        cname.value == "" ||
+                        brain.value == "" ||
+                        power.value == "" ) { 
+
+                            alert("Please input value!");
+                    } else {
+                        for (let character of characterList) {
+                            
+                            if (character.nameList == cname.value){
+                                alert("Please input a new charecter! You can't input same name.");
+                                i = 1;
+                            } 
+                            
+                        }
+                        if (i == 0) {
+                            characterList.push({"nameList" : cname.value , "brainList" : brain.value , "powerList" : power.value , "check" : false});
+                            listItems();
+                        }
+                                                
+                    }
+
                 }
+              
+            }
             
+
+            //we editing the check status of charecterList.
+            function checkboxes(ooo) {
+                for (let character in characterList) {
+
+                    if (characterList[character].nameList  == ooo.id) {
+                        if ( characterList[character].check == true) {
+                            characterList[character].check = false ;
+                        } else {
+                            characterList[character].check = true ;
+                        }
+
+                    }
+
+                }
+            } 
             
+            //We do the editing operations in this section.
+            function edit() {
+                let checkboxs = document.querySelectorAll("input[type='checkbox']");
+                let i = 0;
+
+                for (let checkbox of checkboxs) {
+                   checkbox.checked === true ? i++ : i ;
+                }
+
+                if (i > 1 || i == 0) {
+                    alert("You can select one charecter for edit!")
+                    for (let checkbox of checkboxs){
+                        checkbox.checked = false;
+                    }
+                } else {
+                    for (let checkbox of checkboxs) {
+                        if (checkbox.checked === true) { 
+                            cname.value = checkbox.parentElement.children[1].children[0].children[0].textContent;
+                            brain.value = checkbox.parentElement.children[1].children[0].children[1].children[1].textContent;
+                            power.value = checkbox.parentElement.children[1].children[0].children[2].children[1].textContent;
+
+                            addPlayerbtn.innerText = "Edit Player";
+                            editStatus = true ;
+                        }
+                    }
+                }
             }
 
-
-
+            
+            
+            
         </script>
         
     </div>
