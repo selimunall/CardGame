@@ -65,11 +65,12 @@
             const cards = document.getElementById("cards");
             const addPlayerbtn = document.getElementById("addPlayerbtn");  
             let editStatus = false ;
+            let index ;
 
             let characterList = [
-                {"nameList" : "Selim" , "brainList" : 33 , "powerList" : 33 , "check" : true},
-                {"nameList" : "Ali" , "brainList" : 44 , "powerList" : 55 , "check" : false},
-                {"nameList" : "Veli" , "brainList" : 44 , "powerList" : 55 ,  "check" : false},
+                {"nameList" : "Selim" , "brainList" : 10 , "powerList" : 20 , "check" : true},
+                {"nameList" : "Ali" , "brainList" : 30 , "powerList" : 55 , "check" : false},
+                {"nameList" : "Veli" , "brainList" : 30 , "powerList" : 20 ,  "check" : false},
             ];
             listItems();
 
@@ -96,14 +97,16 @@
             //we use this function for add to Array List and we call Character List again and We're checking to see if it is the same character.
             function characterAdd() {
                 if (editStatus == true) {
-                    
-
+                    characterList[index].nameList = cname.value;
+                    characterList[index].brainList = brain.value;
+                    characterList[index].powerList = power.value;
 
                     addPlayerbtn.innerText = "Add Player";
                     editStatus = false ;
                     cname.value = "";
                     brain.value = "";
                     power.value = "";
+                    listItems();
                 } else {
                     
                     let i = 0;
@@ -165,21 +168,77 @@
                         checkbox.checked = false;
                     }
                 } else {
-                    for (let checkbox of checkboxs) {
-                        if (checkbox.checked === true) { 
-                            cname.value = checkbox.parentElement.children[1].children[0].children[0].textContent;
-                            brain.value = checkbox.parentElement.children[1].children[0].children[1].children[1].textContent;
-                            power.value = checkbox.parentElement.children[1].children[0].children[2].children[1].textContent;
+                    for (let character in characterList) {
+                        if (characterList[character].check == true) { 
+                            cname.value = characterList[character].nameList;
+                            brain.value = characterList[character].brainList;
+                            power.value = characterList[character].powerList;
 
                             addPlayerbtn.innerText = "Edit Player";
                             editStatus = true ;
+                            index = character;
                         }
                     }
                 }
             }
 
-            
-            
+            //We are used to delete prompts from the list.
+            function deleteItem() {
+                for (let character in characterList) {
+                        if (characterList[character].check == true) { 
+                            characterList.splice(character,1);
+                            deleteItem();
+                        }
+                }
+                listItems();
+            }
+
+            //In this episode we make the selected characters fight, for me the most important weapon is the brain, so the one with more brain power is more important.
+            function war() {
+                let selectCharecter = 0;
+                let i = 0;
+                let character_1;
+                let character_2;
+                for (let character in characterList) {
+                    characterList[character].check == true ? i++ : i ;
+
+                    if (characterList[character].check == true) {
+                        if (selectCharecter == 1) {
+                            character_2 = character ;
+                        }
+
+                        if (selectCharecter == 0) {
+                            character_1 = character ;
+                            selectCharecter = 1;
+                        }
+                    }
+                }
+
+                if (i > 2 || i < 2) {
+                    alert("You have to choose two characters to make the characters fight.");
+                } else {
+                    let maxBrain = characterList[character_1].brainList - characterList[character_2].brainList ;
+                    let maxPower = characterList[character_1].powerList - characterList[character_2].powerList ;
+                    if (maxBrain > 15 ){
+                        alert(`Player named ${characterList[character_1].nameList} wins!`);
+                        console.log("1");
+                    } else if (maxBrain >= -15 && maxBrain <= 15) {
+                        if (maxPower >= 30 ) {
+                            alert(`Player named ${characterList[character_1].nameList} wins!`);
+                            console.log("2");
+                        } else if (maxPower == 0) {
+                            alert("No player has won!");
+                            console.log("3");
+                        }else {
+                            alert(`Player named ${characterList[character_2].nameList} wins!`);
+                            console.log("4");
+                        }
+                    } else {
+                        alert(`Player named ${characterList[character_2].nameList} wins!`);
+                        console.log("5");
+                    }
+                }
+            }
             
         </script>
         
